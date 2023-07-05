@@ -1,4 +1,4 @@
-![olive_image](https://github.com/wldfngrs/Olive/blob/main/Olive-bci/asset/icon.png)
+![dino_gif](https://github.com/wldfngrs/chrome-dinosaur-terminal/blob/main/assets/dino.gif)
 # Dino
 This repository contains a rendering of the popular chrome dinosaur game on the terminal, in C++ and curses.
 
