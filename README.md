@@ -22,7 +22,7 @@ Once you have cloned the repository, navigate to the project directory and run t
 
 `$ make main`
 
-This will compile the program and create the executable file in the `bin` directory. Navigate to the bin directory and run the following command:
+This will compile the program and create the executable file in the 'bin' subdirectory. Navigate to the 'bin' subdirectory and run the following command:
 
 `$ ./main`
 
