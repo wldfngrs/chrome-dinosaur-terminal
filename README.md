@@ -1,4 +1,4 @@
-![dino_gif](https://github.com/wldfngrs/chrome-dinosaur-terminal/blob/main/assets/dino.mkv)
+![dino_gif](https://github.com/wldfngrs/chrome-dinosaur-terminal/blob/main/assets/dino.gif)
 # Dino
 This repository contains a rendering of the popular chrome dinosaur game on the terminal, in C++ and curses.
 
