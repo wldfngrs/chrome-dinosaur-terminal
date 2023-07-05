@@ -1,3 +1,4 @@
+![olive_image](https://github.com/wldfngrs/Olive/blob/main/Olive-bci/asset/icon.png)
 # Dino
 This repository contains a rendering of the popular chrome dinosaur game on the terminal, in C++ and curses.
 
@@ -29,4 +30,4 @@ Enjoy!
 
 ## Credits
 
-This program was created by wldfngrs as part of a custom-malware build project.
+Thanks to [fundamelon](https://github.com/fundamelon/terminal-game-tutorial) and their terminal game tutorial for an intro to terminal game development.
