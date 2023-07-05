@@ -247,8 +247,7 @@ bool ObjectField::update(WINDOW* game_wnd, rect player_rect, int player_score) {
 	}
 
 	if (this->object_set.size() < 7) {
-		//int i = player_score > 500 ? 6 : 4;
-		int i = 6;
+		int i = player_score > 500 ? 6 : 4;
 		
 		/* Spawn a new object */
 		std::random_device rd; /* Obtain random number from hardware */
