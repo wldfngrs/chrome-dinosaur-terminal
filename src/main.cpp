@@ -8,9 +8,10 @@ int main(int argv, char** argc) {
 		int init_status = init();
 
 		if (init_status == 0) {
-			if (!run(&max_score)) {
+			int return_val = run(&max_score);
+			if (return_val == 1) { // end game after game over
 				break;
-			};
+			}
 		}
 	}
 

@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <cstdint>
+#include <ctime>
 #include <ncurses.h>
 #include <random>
 
@@ -214,7 +215,7 @@ bool ObjectField::update(WINDOW* game_wnd, rect player_rect, int player_score) {
 
 	/* Update existing objects */
 	for (size_t i = 0; i < this->object_set.size(); i++) {
-		if (this->object_set.at(i).getLastPos().x < this->field_bounds.left()) {
+		if (this->object_set.at(i).getLastPos().x < this->field_bounds.left()) {			
 			this->object_set.erase(object_set.begin() + i);
 		}
 	

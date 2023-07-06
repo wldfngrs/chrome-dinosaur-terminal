@@ -20,7 +20,7 @@ To install this program, clone this repository onto your local machine using the
 
 Once you have cloned the repository, navigate to the project directory and run the following command:
 
-`$ make main`
+`$ make`
 
 This will compile the program and create the executable file in the 'bin' subdirectory. Navigate to the 'bin' subdirectory and run the following command:
 

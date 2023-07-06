@@ -27,7 +27,7 @@ typedef struct {
 
 bool isCollided(rect a, rect b); /* function to check if rect B is contained in rect B */
 int init();
-bool run(int* max_score);
+int run(int* max_score);
 void close();
 
 #endif

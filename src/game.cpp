@@ -1,4 +1,5 @@
 #include <string>
+#include <ctime>
 #include <ncurses.h>
 #include <unistd.h>
 
@@ -68,25 +69,27 @@ int init() {
 	return 0;
 }
 
-bool run(int* max_score) {
+int run(int* max_score) {
 	ObjectField field;
 	DirtField df;
-
+	
 	Player player;
+
 	player.up = false;
 	player.score = 0;
+	player.air_time = 0;
+	player.max_air_time = 58; /* Increment or decrement to control player air time */
 	
 	int tick = 0;	
+
+	int score_tick = 0;
 
 	int speed_tick = 0;
 	int speed_tick_cap = 2; /* Increment or decrement to control obstacl speed */
 
 	int dirt_tick = 0;
 	const int dirt_tick_cap = 2;
-		
-	player.air_time = 0;
-	player.max_air_time = 58; /* Increment or decrement to control player air time */
-
+	
 	int feet_tick = 0;
 
 	int in_char = 0;
@@ -104,8 +107,6 @@ bool run(int* max_score) {
 	// initial draw
 	wrefresh(main_wnd);
 	wrefresh(game_wnd);
-	
-	//mvwprintw(main_wnd, 0, 0, "press SPACE to start...");
 	
 	// Seed dirt field
 	df.seed();
@@ -172,7 +173,7 @@ bool run(int* max_score) {
 				if (field.update(game_wnd, player.bounds, player.score)) {
 					/* Collision occured; game over*/
 					game_over = true;
-				};
+				}
 			}
 		}
 
@@ -209,30 +210,25 @@ bool run(int* max_score) {
 			input = tolower(input);
 			
 			switch(input) {
-				case 'q': return false; // quit game
-				default: return true;  // retry
+				case 'q': return 1; // quit game
+				default: return 2;  // retry
 			}
 		}
 
-		if (player.up) player.air_time++;
-
-		if (tick % 5 == 0) {
+		if (score_tick % 8 == 0) {
 			// increase player score
 			player.score += 1;
-		}
-
+		}		
+		
 		mvwprintw(game_wnd, 0, 58, "HIGH SCORE: %8d", *max_score);
 		mvwprintw(game_wnd, 1, 55, "CURRENT SCORE: %8d", player.score);
 		wrefresh(game_wnd);
 
+		if (player.up) player.air_time++;
+		score_tick++;
 		feet_tick++;
 		dirt_tick++;
 		tick++;
-
-		if (player.score > 1500) {
-			speed_tick_cap = 1;
-			player.max_air_time = 43;
-		}
 
 		usleep(10000);	
 	}
