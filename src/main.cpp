@@ -1,7 +1,7 @@
 #include "game.h"
 #include "player.h"
 
-int main(int argv, char** argc) {
+int main() {
 	int max_score = 0;
 
 	while (1) {
