@@ -5,44 +5,44 @@
 #include <random>
 
 #include "game.h"
-#include "objects.h"
+#include "obstacles.h"
 
 int tick = 0;
 
 ///////////////////////////// OBJECT CLASS IMPLEMENTATION
 ////////////////////////////////
 
-Object::Object(std::vector<vec2i> pos, std::string disp_char, int type)
-    : pos(pos), disp_char(disp_char), type(type), fielded(false) {}
+Obstacle::Obstacle(std::vector<vec2i> pos, std::string disp_char, int type)
+    : m_positions(pos), m_disp_char(disp_char), m_type(type), m_fielded(false) {}
 
-vec2i Object::getLastPos() const {
-  return this->pos[this->disp_char.size() - 1];
+vec2i Obstacle::getLastPos() const {
+  return m_positions[m_disp_char.size() - 1];
 }
 
-std::vector<vec2i> Object::getPos() const { return this->pos; }
+std::vector<vec2i> Obstacle::getPos() const { return m_positions; }
 
-std::string Object::getDispChar() const { return this->disp_char; }
+std::string Obstacle::getDispChar() const { return m_disp_char; }
 
-void Object::fieldedToTrue() { this->fielded = true; }
+void Obstacle::fieldedToTrue() { m_fielded = true; }
 
-void Object::update(WINDOW *game_wnd) {
-  for (size_t i = 0; i < this->disp_char.size(); i++) {
-    if (this->pos[i].y == 19) {
-      mvwaddch(game_wnd, this->pos[i].y, this->pos[i].x, '_');
+void Obstacle::update(WINDOW *game_wnd) {
+  for (size_t i = 0; i < m_disp_char.size(); i++) {
+    if (m_positions[i].y == 19) {
+      mvwaddch(game_wnd, m_positions[i].y, m_positions[i].x, '_');
     } else {
-      mvwaddch(game_wnd, this->pos[i].y, this->pos[i].x, ' ');
+      mvwaddch(game_wnd, m_positions[i].y, m_positions[i].x, ' ');
     }
   }
 
-  this->render(game_wnd);
-  this->fieldedToTrue(); /* Object is now in the object field/game window */
+  render(game_wnd);
+  fieldedToTrue(); /* Object is now in the object field/game window */
 }
 
-void Object::render(WINDOW *game_wnd) {
-  if (this->type == 6 && tick >= 20) {
+void Obstacle::render(WINDOW *game_wnd) {
+  if (m_type == 6 && tick >= 20) {
     tick = 0;
-    if (this->disp_char[5] == ',') {
-      this->disp_char = "         "
+    if (m_disp_char[5] == ',') {
+      m_disp_char = "         "
                         "         "
                         "  _____  "
                         ">|_   _\\="
@@ -50,9 +50,9 @@ void Object::render(WINDOW *game_wnd) {
                         "   |/    "
                         "___'_____";
 
-    } else if (this->disp_char[5] == ' ') {
+    } else if (m_disp_char[5] == ' ') {
 
-      this->disp_char = "     ,   "
+      m_disp_char = "     ,   "
                         "    /|   "
                         "  _/ |_  "
                         ">|_____\\="
@@ -60,10 +60,10 @@ void Object::render(WINDOW *game_wnd) {
                         "         "
                         "_________";
     }
-  } else if (this->type == 5 && tick >= 20) {
+  } else if (m_type == 5 && tick >= 20) {
     tick = 0;
-    if (this->disp_char[5] == ',') {
-      this->disp_char = "         "
+    if (m_disp_char[5] == ',') {
+      m_disp_char = "         "
                         "         "
                         "  _____  "
                         ">|_   _\\="
@@ -71,9 +71,9 @@ void Object::render(WINDOW *game_wnd) {
                         "   |/    "
                         "   '     ";
 
-    } else if (this->disp_char[5] == ' ') {
+    } else if (m_disp_char[5] == ' ') {
 
-      this->disp_char = "     ,   "
+      m_disp_char = "     ,   "
                         "    /|   "
                         "  _/ |_  "
                         ">|_____\\="
@@ -83,127 +83,137 @@ void Object::render(WINDOW *game_wnd) {
     }
   }
 
-  for (size_t i = 0; i < this->disp_char.size(); i++) {
-    this->pos[i].x -= 1;
-    mvwaddch(game_wnd, this->pos[i].y, this->pos[i].x, this->disp_char[i]);
+  for (size_t i = 0; i < m_disp_char.size(); i++) {
+    m_positions[i].x -= 1;
+    mvwaddch(game_wnd, m_positions[i].y, m_positions[i].x, static_cast<unsigned>(m_disp_char[i]));
   }
   tick++;
 }
 
-bool Object::getFielded() { return this->fielded; }
+bool Obstacle::getFielded() { return m_fielded; }
 
 ///////////////////////////// DIRT CLASS IMPLEMENTATION
 ////////////////////////////////
 
 Dirt::Dirt(int x, int y, char disp_char) {
-  this->pos.x = x;
-  this->pos.y = y;
-  this->disp_char = disp_char;
+  m_position.x = x;
+  m_position.y = y;
+  m_disp_char = disp_char;
 }
 
 void Dirt::update(WINDOW *game_wnd) {
-  mvwaddch(game_wnd, this->pos.y, this->pos.x, ' ');
-  this->pos.x -= 1;
-  mvwaddch(game_wnd, this->pos.y, this->pos.x, this->disp_char);
+  mvwaddch(game_wnd, m_position.y, m_position.x, static_cast<unsigned>(' '));
+  m_position.x -= 1;
+  mvwaddch(game_wnd, m_position.y, m_position.x, static_cast<unsigned>(m_disp_char));
 }
 
-vec2i Dirt::getPos() const { return this->pos; }
+vec2i Dirt::getPos() const { return m_position; }
 
 ///////////////////////////// DIRT FIELD CLASS IMPLEMENTATION
 ////////////////////////////////
 
 void DirtField::update(WINDOW *game_wnd) {
-  for (auto counter{0}; auto& dirt: dirt_field) {
-    if (dirt.getPos().x < dirt_bounds.left()) {
-      dirt_field.erase(dirt_field.begin()+counter);
+  for (auto dirt_index{m_dirt_field.begin()}; dirt_index != m_dirt_field.end();
+       ++dirt_index) {
+    auto &dirt = *dirt_index;
+    if (dirt.getPos().x < m_dirt_bounds.left()) {
+      m_dirt_field.erase(dirt_index);
     }
 
     dirt.update(game_wnd);
   }
 
-  size_t dirt_type = rand() % 4;
-
   std::random_device rd;  /* Obtain random number from hardware */
   std::mt19937 gen(rd()); /* Seed the generator */
   std::uniform_int_distribution<> distr(20, 22);
+  std::uniform_int_distribution<> dirt_distribution(0, 4);
 
-  size_t y_cord = distr(gen);
+  auto y_cord = distr(gen);
+
+  auto dirt_type = dirt_distribution(gen);
 
   if (dirt_type == 0) {
-    Dirt dirt(this->dirt_bounds.width(), y_cord, '.');
-    this->dirt_field.push_back(dirt);
+    Dirt dirt(m_dirt_bounds.width(), y_cord, '.');
+    m_dirt_field.push_back(dirt);
   } else if (dirt_type == 1) {
-    Dirt dirt(this->dirt_bounds.width(), y_cord, '-');
-    this->dirt_field.push_back(dirt);
+    Dirt dirt(m_dirt_bounds.width(), y_cord, '-');
+    m_dirt_field.push_back(dirt);
   } else if (dirt_type == 2) {
-    Dirt dirt(this->dirt_bounds.width(), y_cord, '_');
-    this->dirt_field.push_back(dirt);
+    Dirt dirt(m_dirt_bounds.width(), y_cord, '_');
+    m_dirt_field.push_back(dirt);
   } else if (dirt_type == 3) {
-    Dirt dirt(this->dirt_bounds.width(), y_cord, '\'');
-    this->dirt_field.push_back(dirt);
+    Dirt dirt(m_dirt_bounds.width(), y_cord, '\'');
+    m_dirt_field.push_back(dirt);
   } else {
-    Dirt dirt(this->dirt_bounds.width(), y_cord, '`');
-    this->dirt_field.push_back(dirt);
+    Dirt dirt(m_dirt_bounds.width(), y_cord, '`');
+    m_dirt_field.push_back(dirt);
   }
 }
 
-void DirtField::setBounds(rect a) { this->dirt_bounds = a; }
+void DirtField::setBounds(rect a) { m_dirt_bounds = a; }
 
 void DirtField::seed() {
+  std::random_device rd; /* Obtain random number from hardware */
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<> distr(20, 22);
+  std::uniform_int_distribution<> distr2(0, 78);
+  std::uniform_int_distribution<> dirt_distribution(0, 4);
+
   for (size_t i = 0; i < 100; i++) {
-    size_t dirt_type = rand() % 4;
 
-    std::random_device rd; /* Obtain random number from hardware */
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> distr(20, 22);
-    std::uniform_int_distribution<> distr2(0, 78);
-
-    size_t y_cord = distr(gen);
-    size_t x_cord = distr2(gen);
+    auto dirt_type = dirt_distribution(gen);
+    auto y_cord = distr(gen);
+    auto x_cord = distr2(gen);
 
     if (dirt_type == 0) {
       Dirt dirt(x_cord, y_cord, '.');
-      this->dirt_field.push_back(dirt);
+      m_dirt_field.push_back(dirt);
     } else if (dirt_type == 1) {
       Dirt dirt(x_cord, y_cord, '-');
-      this->dirt_field.push_back(dirt);
+      m_dirt_field.push_back(dirt);
     } else if (dirt_type == 2) {
       Dirt dirt(x_cord, y_cord, '_');
-      this->dirt_field.push_back(dirt);
+      m_dirt_field.push_back(dirt);
     } else if (dirt_type == 3) {
       Dirt dirt(x_cord, y_cord, '\'');
-      this->dirt_field.push_back(dirt);
+      m_dirt_field.push_back(dirt);
     } else {
       Dirt dirt(x_cord, y_cord, '`');
-      this->dirt_field.push_back(dirt);
+      m_dirt_field.push_back(dirt);
     }
   }
 }
 
-rect DirtField::getBounds() { return this->dirt_bounds; }
+rect DirtField::getBounds() { return m_dirt_bounds; }
 
 ///////////////////////////// OBJECT FIELD CLASS IMPLEMENTATION
 ////////////////////////////////
 
-rect ObjectField::getBounds() { return this->field_bounds; }
+ObstacleField::ObstacleField():m_rd(), m_gen(m_rd()){
+}
 
-void ObjectField::setBounds(rect a) { this->field_bounds = a; }
+rect ObstacleField::getBounds() { return m_field_bounds; }
 
-bool ObjectField::update(WINDOW *game_wnd, rect player_rect, int player_score) {
+void ObstacleField::setBounds(rect a) { m_field_bounds = a; }
+
+bool ObstacleField::update(WINDOW *game_wnd, rect player_rect, int player_score) {
   int dist_index = rand() % 2;
 
   /* Update existing objects */
-  for (size_t i = 0; i < this->object_set.size(); i++) {
-    if (this->object_set.at(i).getLastPos().x < this->field_bounds.left()) {
-      this->object_set.erase(object_set.begin() + i);
+  for (auto current_point{m_object_set.begin()};
+       current_point != m_object_set.end(); ++current_point) {
+
+    auto &current_object = *current_point;
+
+    if (current_object.getLastPos().x < m_field_bounds.left()) {
+      m_object_set.erase(current_point);
     }
 
-    if (this->object_set.at(i).getFielded() || i == 0) {
-      this->object_set.at(i).update(game_wnd);
-      this->obj_dist_ref = &(this->object_set.at(i));
+    if (current_object.getFielded() || current_point == m_object_set.begin()) {
+      current_object.update(game_wnd);
 
-      std::vector<vec2i> obj_pos = this->object_set.at(i).getPos();
-      size_t length = this->object_set.at(i).getDispChar().size();
+      std::vector<vec2i> obj_pos = current_object.getPos();
+      size_t length = current_object.getDispChar().size();
       rect object_rect = {{obj_pos[0].x, obj_pos[0].y},
                           {obj_pos[length - 1].x, obj_pos[length - 1].y}};
 
@@ -211,33 +221,27 @@ bool ObjectField::update(WINDOW *game_wnd, rect player_rect, int player_score) {
         return true;
       }
     } else {
-      int diff = abs(this->obj_dist_ref->getLastPos().x -
-                     this->object_set.at(i).getLastPos().x);
+      auto previous_object = *(std::prev(current_point));
+
+      int diff =
+          abs(previous_object.getLastPos().x - current_object.getLastPos().x);
       if (dist_index == 0) {
         if (diff >= 60) {
-          this->object_set.at(i).update(game_wnd);
-          this->obj_dist_ref = &(this->object_set.at(i));
-        }
-      } else {
-        if (diff >= 78) {
-          this->object_set.at(i).update(game_wnd);
-          this->obj_dist_ref = &(this->object_set.at(i));
+          current_object.update(game_wnd);
         }
       }
     }
   }
 
-  if (this->object_set.size() < 7) {
+  if (m_object_set.size() < 7) {
     int i = player_score > 500 ? 6 : 4;
 
     /* Spawn a new object */
-    std::random_device rd;  /* Obtain random number from hardware */
-    std::mt19937 gen(rd()); /* Seed the generator */
     std::uniform_int_distribution<> distr(0, i);
 
-    size_t object_type =
-        distr(gen); /* generate random number between 0 and 6 */
-    rect fb = this->getBounds();
+    /* generate random number between 0 and 6 */
+    auto object_type = distr(m_gen);
+    rect fb = getBounds();
 
     std::string dc; /* Display characters */
 
@@ -267,8 +271,8 @@ bool ObjectField::update(WINDOW *game_wnd, rect player_rect, int player_score) {
            " _| |_ "
            "|_____|";
 
-      Object obj0{p, dc, 0};
-      this->object_set.push_back(obj0);
+      Obstacle obj0{p, dc, 0};
+      m_object_set.push_back(obj0);
       break;
     }
 
@@ -300,8 +304,8 @@ bool ObjectField::update(WINDOW *game_wnd, rect player_rect, int player_score) {
            "  | |  "
            "__|_|__";
 
-      Object obj1{p, dc, 1};
-      this->object_set.push_back(obj1);
+      Obstacle obj1{p, dc, 1};
+      m_object_set.push_back(obj1);
       break;
     }
 
@@ -356,8 +360,8 @@ bool ObjectField::update(WINDOW *game_wnd, rect player_rect, int player_score) {
            "    | |    "
            "____|_|____";
 
-      Object obj2{p, dc, 2};
-      this->object_set.push_back(obj2);
+      Obstacle obj2{p, dc, 2};
+      m_object_set.push_back(obj2);
       break;
     }
 
@@ -392,8 +396,8 @@ bool ObjectField::update(WINDOW *game_wnd, rect player_rect, int player_score) {
            "| |_| |_| |"
            "|_________|";
 
-      Object obj3{p, dc, 3};
-      this->object_set.push_back(obj3);
+      Obstacle obj3{p, dc, 3};
+      m_object_set.push_back(obj3);
       break;
     }
 
@@ -429,8 +433,8 @@ bool ObjectField::update(WINDOW *game_wnd, rect player_rect, int player_score) {
            "  | |  "
            "__|_|__";
 
-      Object obj4{p, dc, 4};
-      this->object_set.push_back(obj4);
+      Obstacle obj4{p, dc, 4};
+      m_object_set.push_back(obj4);
       break;
     }
 
@@ -479,8 +483,8 @@ bool ObjectField::update(WINDOW *game_wnd, rect player_rect, int player_score) {
            "   |/    "
            "   '     ";
 
-      Object obj5{p, dc, 5};
-      this->object_set.push_back(obj5);
+      Obstacle obj5{p, dc, 5};
+      m_object_set.push_back(obj5);
       break;
     }
 
@@ -529,8 +533,8 @@ bool ObjectField::update(WINDOW *game_wnd, rect player_rect, int player_score) {
            "   |/    "
            "___'_____";
 
-      Object obj6{p, dc, 6};
-      this->object_set.push_back(obj6);
+      Obstacle obj6{p, dc, 6};
+      m_object_set.push_back(obj6);
       break;
     }
     }

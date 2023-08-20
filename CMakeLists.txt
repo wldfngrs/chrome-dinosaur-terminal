@@ -32,7 +32,7 @@ include(cmake/StaticAnalyzers.cmake)
 add_executable(dinosaur_game)
 
 
-target_sources(dinosaur_game PRIVATE src/main.cpp src/game.cpp src/objects.cpp src/player.cpp)
+target_sources(dinosaur_game PRIVATE src/main.cpp src/game.cpp src/obstacles.cpp src/player.cpp)
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(NCURSES

@@ -4,7 +4,7 @@
 #include <unistd.h>
 
 #include "game.h"
-#include "objects.h"
+#include "obstacles.h"
 #include "player.h"
 
 WINDOW *main_wnd;
@@ -68,7 +68,7 @@ int init() {
 }
 
 bool run(int *max_score) {
-  ObjectField field;
+  ObstacleField field;
   DirtField df;
 
   Player player;
