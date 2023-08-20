@@ -13,7 +13,8 @@ int tick = 0;
 ////////////////////////////////
 
 Obstacle::Obstacle(std::vector<vec2i> pos, std::string disp_char, int type)
-    : m_positions(pos), m_disp_char(disp_char), m_type(type), m_fielded(false) {}
+    : m_positions(pos), m_disp_char(disp_char), m_type(type), m_fielded(false) {
+}
 
 vec2i Obstacle::getLastPos() const {
   return m_positions[m_disp_char.size() - 1];
@@ -43,49 +44,50 @@ void Obstacle::render(WINDOW *game_wnd) {
     tick = 0;
     if (m_disp_char[5] == ',') {
       m_disp_char = "         "
-                        "         "
-                        "  _____  "
-                        ">|_   _\\="
-                        "   | /   "
-                        "   |/    "
-                        "___'_____";
+                    "         "
+                    "  _____  "
+                    ">|_   _\\="
+                    "   | /   "
+                    "   |/    "
+                    "___'_____";
 
     } else if (m_disp_char[5] == ' ') {
 
       m_disp_char = "     ,   "
-                        "    /|   "
-                        "  _/ |_  "
-                        ">|_____\\="
-                        "         "
-                        "         "
-                        "_________";
+                    "    /|   "
+                    "  _/ |_  "
+                    ">|_____\\="
+                    "         "
+                    "         "
+                    "_________";
     }
   } else if (m_type == 5 && tick >= 20) {
     tick = 0;
     if (m_disp_char[5] == ',') {
       m_disp_char = "         "
-                        "         "
-                        "  _____  "
-                        ">|_   _\\="
-                        "   | /   "
-                        "   |/    "
-                        "   '     ";
+                    "         "
+                    "  _____  "
+                    ">|_   _\\="
+                    "   | /   "
+                    "   |/    "
+                    "   '     ";
 
     } else if (m_disp_char[5] == ' ') {
 
       m_disp_char = "     ,   "
-                        "    /|   "
-                        "  _/ |_  "
-                        ">|_____\\="
-                        "         "
-                        "         "
-                        "         ";
+                    "    /|   "
+                    "  _/ |_  "
+                    ">|_____\\="
+                    "         "
+                    "         "
+                    "         ";
     }
   }
 
   for (size_t i = 0; i < m_disp_char.size(); i++) {
     m_positions[i].x -= 1;
-    mvwaddch(game_wnd, m_positions[i].y, m_positions[i].x, static_cast<unsigned>(m_disp_char[i]));
+    mvwaddch(game_wnd, m_positions[i].y, m_positions[i].x,
+             static_cast<unsigned>(m_disp_char[i]));
   }
   tick++;
 }
@@ -104,7 +106,8 @@ Dirt::Dirt(int x, int y, char disp_char) {
 void Dirt::update(WINDOW *game_wnd) {
   mvwaddch(game_wnd, m_position.y, m_position.x, static_cast<unsigned>(' '));
   m_position.x -= 1;
-  mvwaddch(game_wnd, m_position.y, m_position.x, static_cast<unsigned>(m_disp_char));
+  mvwaddch(game_wnd, m_position.y, m_position.x,
+           static_cast<unsigned>(m_disp_char));
 }
 
 vec2i Dirt::getPos() const { return m_position; }
@@ -189,14 +192,14 @@ rect DirtField::getBounds() { return m_dirt_bounds; }
 ///////////////////////////// OBJECT FIELD CLASS IMPLEMENTATION
 ////////////////////////////////
 
-ObstacleField::ObstacleField():m_rd(), m_gen(m_rd()){
-}
+ObstacleField::ObstacleField() : m_rd(), m_gen(m_rd()) {}
 
 rect ObstacleField::getBounds() { return m_field_bounds; }
 
 void ObstacleField::setBounds(rect a) { m_field_bounds = a; }
 
-bool ObstacleField::update(WINDOW *game_wnd, rect player_rect, int player_score) {
+bool ObstacleField::update(WINDOW *game_wnd, rect player_rect,
+                           int player_score) {
   int dist_index = rand() % 2;
 
   /* Update existing objects */

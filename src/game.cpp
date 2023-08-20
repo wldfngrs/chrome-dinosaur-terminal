@@ -67,7 +67,7 @@ int init() {
   return 0;
 }
 
-bool run(int *max_score) {
+bool run(int &max_score) {
   ObstacleField field;
   DirtField df;
 
@@ -196,7 +196,7 @@ bool run(int *max_score) {
     wrefresh(game_wnd);
 
     if (game_over) {
-      *max_score = player.score > *max_score ? player.score : *max_score;
+      max_score = player.score > max_score ? player.score : max_score;
       // Print game over message and prompt user for input
       nodelay(game_wnd, false);
       int input;
@@ -214,9 +214,9 @@ bool run(int *max_score) {
       input = tolower(input);
 
         switch (input) {
-        case 'q':
-          return false; // quit game
         case 'r':
+          return false; // quit game
+        case 'q':
           return true;
         }
       }
@@ -230,7 +230,7 @@ bool run(int *max_score) {
       player.score += 1;
     }
 
-    mvwprintw(game_wnd, 0, 58, "HIGH SCORE: %8d", *max_score);
+    mvwprintw(game_wnd, 0, 58, "HIGH SCORE: %8d", max_score);
     mvwprintw(game_wnd, 1, 55, "CURRENT SCORE: %8d", player.score);
     wrefresh(game_wnd);
 

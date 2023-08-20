@@ -48,7 +48,7 @@ void initPlayerPosition(WINDOW *game_wnd, Player *player) { /* {x,y} */
 
   for (size_t i = 0; i < player->disp_char.size(); i++) {
     mvwaddch(game_wnd, player->pos[i].y, player->pos[i].x,
-             player->disp_char[i]);
+             static_cast<unsigned>(player->disp_char[i]));
   }
 
   player->crouched = false;
@@ -101,7 +101,7 @@ void movePlayerDown(WINDOW *game_wnd, Player *player) {
   for (size_t i = 0; i < player->disp_char.size(); i++) {
     player->pos[i].y += 8;
     mvwaddch(game_wnd, player->pos[i].y, player->pos[i].x,
-             player->disp_char[i]);
+             static_cast<unsigned>(player->disp_char[i]));
   }
 }
 
@@ -121,7 +121,7 @@ void movePlayerUp(WINDOW *game_wnd, Player *player) {
   for (size_t i = 0; i < player->disp_char.size(); i++) {
     player->pos[i].y -= 8;
     mvwaddch(game_wnd, player->pos[i].y, player->pos[i].x,
-             player->disp_char[i]);
+             static_cast<unsigned>(player->disp_char[i]));
   }
   flushinp();
 }
@@ -165,7 +165,7 @@ void crouchPlayer(WINDOW *game_wnd, Player *player) {
 
   for (size_t i = 0; i < player->crouch_disp_char.size(); i++) {
     mvwaddch(game_wnd, player->crouch_pos[i].y, player->crouch_pos[i].x,
-             player->crouch_disp_char[i]);
+             static_cast<unsigned>(player->crouch_disp_char[i]));
   }
 
   player->crouched = true;
@@ -203,7 +203,7 @@ void playerFeetAnimation(WINDOW *game_wnd, Player *player) {
 
     for (size_t i = 63; i < player->crouch_disp_char.size(); i++) {
       mvwaddch(game_wnd, player->crouch_pos[i].y, player->crouch_pos[i].x,
-               player->crouch_disp_char[i]);
+               static_cast<unsigned>(player->crouch_disp_char[i]));
     }
 
     return;
@@ -235,6 +235,6 @@ void playerFeetAnimation(WINDOW *game_wnd, Player *player) {
 
   for (size_t i = 86; i < player->disp_char.size(); i++) {
     mvwaddch(game_wnd, player->pos[i].y, player->pos[i].x,
-             player->disp_char[i]);
+             static_cast<unsigned>(player->disp_char[i]));
   }
 }

@@ -25,7 +25,7 @@ struct rect{
 
 bool isCollided(rect a, rect b); /* function to check if rect B is contained in rect B */
 int init();
-int run(int* max_score);
+bool run(int &max_score);
 void close();
 
 #endif
