@@ -1,15 +1,16 @@
 #ifndef OBJECTS_H
 #define OBJECTS_H
 
+#include <random>
 #include <vector>
 #include <string>
 #include <ncurses.h>
 
 #include "game.h"
 
-class Object {
+class Obstacle {
 public:
-	Object(std::vector<vec2i>, std::string, int);
+	Obstacle(std::vector<vec2i>, std::string, int);
 	void render(WINDOW*);
 	void update(WINDOW*);
 	vec2i getLastPos() const;
@@ -18,22 +19,24 @@ public:
 	bool getFielded();
 	void fieldedToTrue(); /* Turn fielded to true */
 private:
-	std::vector<vec2i> pos;
-	std::string disp_char;
-	int type;
-	bool fielded;
+	std::vector<vec2i> m_positions;
+	std::string m_disp_char;
+	int m_type;
+	bool m_fielded;
 };
 
-class ObjectField {
+class ObstacleField {
 public:
+    ObstacleField();
 	bool update(WINDOW*, rect, int);
-	std::vector<Object> getObjects() const;
+	std::vector<Obstacle> getObjects() const;
 	void setBounds(rect);
 	rect getBounds();
 private:
-	Object* obj_dist_ref;
-	rect field_bounds;
-	std::vector<Object> object_set;
+    std::random_device m_rd;
+    std::mt19937 m_gen;
+	rect m_field_bounds;
+	std::vector<Obstacle> m_object_set;
 };
 
 class Dirt {
@@ -42,8 +45,8 @@ public:
 	void update(WINDOW*);
 	vec2i getPos() const;
 private:
-	char disp_char;
-	vec2i pos;
+	char m_disp_char;
+	vec2i m_position;
 };
 
 class DirtField {
@@ -53,8 +56,8 @@ public:
 	void seed();
 	rect getBounds();
 private:
-	rect dirt_bounds;
-	std::vector<Dirt> dirt_field;	
+	rect m_dirt_bounds;
+	std::vector<Dirt> m_dirt_field;	
 };
 
 #endif
